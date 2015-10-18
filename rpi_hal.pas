@@ -97,7 +97,8 @@ const
 	at physical address 0x20nnnnnn. }
 
   PAGE_SIZE			= 4096;	
-  BCM2708_PBASE_pag	= $20000; { Peripheral Base in pages }
+{ $20000 for RPI1, $3F000 for RPI2 }
+  BCM2708_PBASE_pag	= $3F000; { Peripheral Base in pages }
   TIMR_BASE_in_pages= (BCM2708_PBASE_pag + $00B);
   PADS_BASE_in_pages= (BCM2708_PBASE_pag + $100); 
   CLK_BASE_in_pages = (BCM2708_PBASE_pag + $101); // Docu Page 107ff
@@ -1197,8 +1198,10 @@ begin
 	 4   : begin {$IFDEF UNIX} valu:=1; {$ELSE} valu:=0; {$ENDIF} end;      (* if run_on_unix ->1 else 0 *)
 	 5   : if (Upper({$i %FPCTARGETCPU%})='ARM') then valu:=1 else valu:=0; (* if run_on_ARM  ->1 else 0 *)
 	 6	 : begin valu:=1; end;												(* if RPI_Piggyback_board_available -> 1 dummy, for future use *)
-	 7   : if ((rpi_mmap_get_info(5)=1) and 
+{	 7   : if ((rpi_mmap_get_info(5)=1) and 
 	           (Upper(rpi_hw)='BCM2708')) then valu:=1;		   			    (* runs on known rpi HW *)  
+}
+	 7   : valu:=1;
 	 8	 : begin valu:=1; end;												(* if PiFaceBoard_board_available -> 1 dummy, for future use *)
   end;
   rpi_mmap_get_info:=valu;
